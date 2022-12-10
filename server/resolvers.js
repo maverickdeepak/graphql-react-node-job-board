@@ -8,10 +8,19 @@ export const resolvers = {
       const jobId = args.id;
       return Job.findById(jobId);
     },
+    company: (parent, args) => {
+      const companyId = args.id;
+      return Company.findById(companyId);
+    },
   },
   Job: {
     company: (job) => {
       return Company.findById(job.companyId);
+    },
+  },
+  Company: {
+    jobs: (company) => {
+      return Job.findAll((job) => job.companyId === company.id);
     },
   },
 };
