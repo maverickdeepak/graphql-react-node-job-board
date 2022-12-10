@@ -9,7 +9,10 @@ function JobBoard() {
   useEffect(() => {
     fetchJobs()
       .then((jobs) => setJobs(jobs))
-      .catch((error) => setError(true));
+      .catch((error) => {
+        console.log(error);
+        setError(true);
+      });
   }, []);
 
   if (error) {

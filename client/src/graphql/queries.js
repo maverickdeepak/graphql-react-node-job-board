@@ -1,7 +1,13 @@
-import { request, gql } from "graphql-request";
+import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
+// import { request } from "graphql-request";
 import { getAccessToken } from "../auth";
 
 const GRAPHQL_URL = "http://localhost:9000/graphql";
+
+const client = new ApolloClient({
+  uri: GRAPHQL_URL,
+  cache: new InMemoryCache(),
+});
 
 export async function fetchJobs() {
   const query = gql`
@@ -16,8 +22,10 @@ export async function fetchJobs() {
       }
     }
   `;
-  const { jobs } = await request(GRAPHQL_URL, query);
-  return jobs;
+  const result = await client.query({ query });
+  // const { jobs } = await request(GRAPHQL_URL, query);
+  // return jobs;
+  return result.data.jobs;
 }
 
 export async function fetchJob(id) {
@@ -35,8 +43,10 @@ export async function fetchJob(id) {
     }
   `;
   const variables = { id };
-  const { job } = await request(GRAPHQL_URL, query, variables);
-  return job;
+  const result = await client.query({ query, variables });
+  // const { job } = await request(GRAPHQL_URL, query, variables);
+  // return job;
+  return result.data.job;
 }
 
 export async function fetchCompany(id) {
@@ -54,8 +64,10 @@ export async function fetchCompany(id) {
     }
   `;
   const variables = { id };
-  const { company } = await request(GRAPHQL_URL, query, variables);
-  return company;
+  const result = await client.query({ query, variables });
+  return result.data.company;
+  // const { company } = await request(GRAPHQL_URL, query, variables);
+  // return company;
 }
 
 export async function createJob(input) {
@@ -68,6 +80,10 @@ export async function createJob(input) {
   `;
   const variables = { input };
   const headers = { Authorization: "Bearer " + getAccessToken() };
-  const { createJob } = await request(GRAPHQL_URL, query, variables, headers);
-  return createJob;
+  const context = { headers };
+  const results = await client.mutate({ mutation: query, variables, context });
+  // const { createJob } = await request(GRAPHQL_URL, query, variables, headers);
+  // return createJob;
+
+  return results.data.createJob;
 }
