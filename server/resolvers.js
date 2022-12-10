@@ -13,6 +13,23 @@ export const resolvers = {
       return Company.findById(companyId);
     },
   },
+
+  Mutation: {
+    createJob: (parent, args, context) => {
+      const { input } = args;
+      return Job.create(input);
+    },
+    deleteJob(parent, args, context) {
+      const { id } = args;
+      Job.delete(id);
+      return true;
+    },
+    updateJob(parent, args, context) {
+      const { input } = args;
+      return Job.update(input);
+    },
+  },
+
   Job: {
     company: (job) => {
       return Company.findById(job.companyId);
