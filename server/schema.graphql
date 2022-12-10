@@ -9,7 +9,7 @@ type Mutation {
   # TODO: create a Job
   createJob(input: createJobInput!): Job
   # TODO: delete a Job
-  deleteJob(id: ID!): Boolean
+  deleteJob(id: ID!): Job
   # TODO: update a Job
   updateJob(input: updateJobInput): Job
 }
@@ -31,7 +31,6 @@ type Job {
 # input type in graphql format
 input createJobInput {
   title: String!
-  companyId: ID!
   description: String
 }
 
@@ -39,5 +38,4 @@ input updateJobInput {
   id: ID!
   title: String!
   description: String
-  companyId: ID
 }

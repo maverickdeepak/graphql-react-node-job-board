@@ -16,17 +16,37 @@ export const resolvers = {
 
   Mutation: {
     createJob: (parent, args, context) => {
+      const { user } = context;
+      console.log(user);
+      if (!user) {
+        throw new Error("Unauthorized");
+      }
       const { input } = args;
-      return Job.create(input);
+      return Job.create({ ...input, companyId: user.companyId });
     },
-    deleteJob(parent, args, context) {
+    deleteJob: async (parent, args, context) => {
       const { id } = args;
-      Job.delete(id);
-      return true;
+      const { user } = context;
+      if (!user) {
+        throw new Error("Unauthorized");
+      }
+      const job = await Job.findById(id);
+      if (job.companyId !== user.companyId) {
+        throw new Error("Unauthorized");
+      }
+      return Job.delete(id);
     },
-    updateJob(parent, args, context) {
+    updateJob: async (parent, args, context) => {
       const { input } = args;
-      return Job.update(input);
+      const { user } = context;
+      if (!user) {
+        throw new Error("Unauthorized");
+      }
+      const job = await Job.findById(input.id);
+      if (job.companyId !== user.companyId) {
+        throw new Error("Unauthorized");
+      }
+      return Job.update({ ...input, companyId: user.companyId });
     },
   },
 
